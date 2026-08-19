@@ -1,6 +1,1 @@
-venv/
-__pycache__/
-*.pyc
-node_modules/
-npm-debug.log
-.DS_Store
+initial commit

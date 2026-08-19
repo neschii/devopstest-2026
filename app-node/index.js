@@ -24,7 +24,33 @@ app.get('/texto', (req, res) => {
   res.json({ mensagem: 'Oiii!! Essa e uma mensagem de texto do teste tecnico!! ' });
 });
 
-// manda mensagem no console para avisar que o app esta rodando na porta configurada
+// Endpoint para retornar a hora do servidor com o Redis para cachear o resultado e evitar chamadas desnecessarias ao servidor
+app.get('/horario', async (req, res) => {
+  const cacheKey = 'node_server_time';
+  try {
+    const cachedTime = await redis.get(cacheKey);
+    if (cachedTime) {
+      return res.json({
+        horario: cachedTime,
+        origem: 'cache',
+        expiracao_segundos: CACHE_EXPIRATION_SECONDS
+      });
+    }
+
+    const currentTime = new Date().toISOString();
+    await redis.set(cacheKey, currentTime, 'EX', CACHE_EXPIRATION_SECONDS);
+
+    res.json({
+      horario: currentTime,
+      origem: 'servidor',
+      expiracao_segundos: CACHE_EXPIRATION_SECONDS
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Manda mensagem no console para avisar que o app esta rodando na porta configurada
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Node app rodando na porta ${PORT}`);
 });

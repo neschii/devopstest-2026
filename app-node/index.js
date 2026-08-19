@@ -4,9 +4,9 @@ const Redis = require('ioredis');
 
 // Configuracoes do Express e do Redis, configurando a porta e o host do Redis e tambem do tempo de expiração do cache
 const app = express();
-const PORT = process.env.PORT || 8002;
-const REDIS_HOST = process.env.REDIS_HOST || 'redis';
-const REDIS_PORT = process.env.REDIS_PORT || 6379;
+const NODE_PORT = process.env.NODE_PORT;
+const REDIS_HOST = process.env.REDIS_HOST;
+const REDIS_PORT = process.env.REDIS_PORT;
 const CACHE_EXPIRATION_SECONDS = 60;
 
 // Configurando o lazyConnect para que a conexao com o Redis seja feita apenas quando for necessario
@@ -51,6 +51,6 @@ app.get('/horario', async (req, res) => {
 });
 
 // Manda mensagem no console para avisar que o app esta rodando na porta configurada
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Node app rodando na porta ${PORT}`);
+app.listen(NODE_PORT, '0.0.0.0', () => {
+  console.log(`Node app rodando na porta ${NODE_PORT}`);
 });

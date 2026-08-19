@@ -18,3 +18,13 @@ const redis = new Redis({
 
 // Fazer a conexao com o Redis se nao estiver conectado retornar o erro
 redis.connect().catch(err => console.error('Erro de conexao Redis:', err));
+
+// Endpoint para retornar a mensagem de texto
+app.get('/texto', (req, res) => {
+  res.json({ mensagem: 'Oiii!! Essa e uma mensagem de texto do teste tecnico!! ' });
+});
+
+// manda mensagem no console para avisar que o app esta rodando na porta configurada
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Node app rodando na porta ${PORT}`);
+});

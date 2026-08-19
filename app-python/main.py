@@ -8,9 +8,10 @@ import redis.asyncio as redis
 app = FastAPI(title="Python - FastAPI com Redis", version="1.0")
 
 # Configurações do Redis 
+PORT = int(os.getenv("PYTHON_PORT"))
+CACHE_EXPIRATION_SECONDS = int(os.getenv("PYTHON_CACHE_TTL"))
 REDIS_HOST = os.getenv("REDIS_HOST", "redis")
-REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
-CACHE_EXPIRATION_SECONDS = 10
+REDIS_PORT = int(os.getenv("REDIS_PORT"))
 
 # Configura o cliente Redis
 redis_client = redis.Redis(

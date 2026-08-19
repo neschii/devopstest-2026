@@ -36,6 +36,15 @@ async def get_current_time():
             "origem": "cache",
             "expiracao_segundos": CACHE_EXPIRATION_SECONDS
         }
+# formatação do horário atual com timezone de São Paulo
+    current_time = datetime.now(ZoneInfo("America/Sao_Paulo")).strftime("%Y-%m-%d %H:%M:%S")
+    await redis_client.set(cache_key, current_time, ex=CACHE_EXPIRATION_SECONDS)
+# tempo de expiração do cache configurado para 60 segundos
+    return {
+        "horario": current_time,
+        "origem": "servidor",
+        "expiracao_segundos": CACHE_EXPIRATION_SECONDS
+    }
 
 # rodar o arquivo diretamente lendo a porta dinâmica 
 if __name__ == "__main__":

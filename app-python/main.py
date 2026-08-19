@@ -19,3 +19,24 @@ redis_client = redis.Redis(
     port=REDIS_PORT,
     decode_responses=True
 )
+# endpoint retornando o texto
+@app.get("/texto")
+async def get_fixed_text():
+    return {"mensagem": "Oiii, eu sou um teste com Python!!"}
+
+# endpoint retornando o horário atual com cache 
+@app.get("/horario")
+async def get_current_time():
+    cache_key = "python_server_time"
+    cached_time = await redis_client.get(cache_key)
+
+    if cached_time:
+        return {
+            "horario": cached_time,
+            "origem": "cache",
+            "expiracao_segundos": CACHE_EXPIRATION_SECONDS
+        }
+
+# rodar o arquivo diretamente lendo a porta dinâmica 
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=PORT, reload=True)

@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis_cache
+    restart: always
+    ports:
+      - "${REDIS_PORT}:6379"
+    environment:
+      - TZ
+    volumes:
+      - redis_data:/data
+    networks:
+      - app_network
+
+  app-python:
+    build:
+      context: ./app-python
+      dockerfile: Dockerfile
+    container_name: app_python
+    restart: always
+    ports:
+      - "${PYTHON_PORT}:${PYTHON_PORT}"
+    environment:
+      - PYTHON_PORT
+      - PYTHON_CACHE_TTL
+      - REDIS_HOST
+      - REDIS_PORT
+      - TZ
+    depends_on:
+      - redis
+    networks:
+      - app_network
+
+  app-node:
+    build:
+      context: ./app-node
+      dockerfile: Dockerfile
+    container_name: app_node
+    restart: always
+    ports:
+      - "${NODE_PORT}:${NODE_PORT}"
+    environment:
+      - NODE_PORT
+      - NODE_CACHE_TTL
+      - REDIS_HOST
+      - REDIS_PORT
+      - TZ
+    depends_on:
+      - redis
+    networks:
+      - app_network
+
+volumes:
+  redis_data:
+
+networks:
+  app_network:
+    driver: bridge
